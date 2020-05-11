@@ -1,3 +1,5 @@
+//https://github.com/nothings/stb
+
 #include <bits/stdc++.h>
 using namespace std;
 #define STB_IMAGE_IMPLEMENTATION
