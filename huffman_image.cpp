@@ -46,7 +46,7 @@ int main()
 {
 	int width, height, bpp;
 
-	uint8_t* rgb_image = stbi_load("/home/sundesh/Downloads/colombia.jpg", &width, &height, &bpp, 1);
+	uint8_t* rgb_image = stbi_load("colombia.jpg", &width, &height, &bpp, 1);
 
 	int image[height][width];
 	int itr = 0;
