@@ -1,6 +1,8 @@
 #include <bits/stdc++.h>
-
 using namespace std;
+
+#define STB_IMAGE_WRITE_IMPLEMENTATION
+#include "stb_image_write.h"
 
 struct pixel{
 	int label;
@@ -52,13 +54,15 @@ void preoder(pixel* root, string s){
 	return;
 }
 
-int main(){
+int main()
+{
+	ifstream in("huffman_encoded.txt");
 	int n;
-	cin>>n;
+	in>>n;
 	pixel* root = new pixel(-1);
 	for(int i=0; i<n; i++){
 		string a,b,c;
-		cin>>a>>b>>c;
+		in>>a>>b>>c;
 		add(root, 0, c, a);
 	}
 
@@ -66,11 +70,18 @@ int main(){
 	preoder(root, "");
 
 	string w;
-	cin >> w;
+	in >> w;
 
 	pixel* ptr = root;
 
-	vector<int> v;
+	int height, width, num_channel;
+
+	in>>height>>width>>num_channel;
+
+	uint8_t* rgb_image;
+    rgb_image = (uint8_t*) malloc(width*height*num_channel);
+	
+    int itr = 0;
 
 	for(auto i:w){
 		if(i=='0')
@@ -78,16 +89,12 @@ int main(){
 		else
 			ptr = ptr->right;
 		if(ptr->label != -1){
-			v.push_back(ptr->label);
+			rgb_image[itr++] = char(ptr->label);
 			ptr = root;
 		}
 	}
 
-	for(auto i:v){
-		cout << (char)i ;
-	} cout << endl;
+	stbi_write_png("image.png", width, height, num_channel, rgb_image, width*num_channel);
 
 	return 0;
 }
-
-// blvbjeanvnkjvnjlearknjnakrnekndcjbhbllivuekrjhggefskvhfbvkjdbsrjgk
