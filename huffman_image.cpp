@@ -88,7 +88,7 @@ int main(int argc, char** argv)
 	    if (hist[i] != 0) 
 	        nodes += 1; 
 
-	out<<nodes<<"\n";
+	out << nodes << "\n";
 
 	int totpix = height*width;
 

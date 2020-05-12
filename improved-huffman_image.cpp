@@ -32,16 +32,19 @@ struct compare{
 
 huffcode codes[256];
 
+ofstream out("improved_huffman_encoded.txt");
+
 void preoder(pixel* root, string s, int level, int parent){
 	if(root->label < 256){
 		codes[root->label].parent = parent;
 		codes[root->label].code = s;
 		cout << setfill(' ') << setw(3) << root->label 
 			<< " -> " << setw(20) << s << setw(4) << codes[root->label].parent << setw(20)<< fixed << setprecision(10) << root->freq << endl; 
+
+		out << root->label << " -> " << s << "\n";
+
 		return;
 	}
-	// out << root->label << " -> " << root->left->label << " [ label = \"" << s+'0' << "\"];"<<endl;
-	// out << root->label << " -> " << root->right->label << " [ label = \"" << s+'1' << "\"];" << endl; 
 	
 	if(level == 3)
 		parent = root->label;
@@ -54,25 +57,51 @@ void preoder(pixel* root, string s, int level, int parent){
 
 
 
-int main()
+int main(int argc, char** argv)
 {
-	int width, height, bpp;
+	int width, height, bpp, num_channel = 1;
 
-	uint8_t* rgb_image = stbi_load("colombia.jpg", &width, &height, &bpp, 1);
+	if (argc>2)
+	{
+		cout<<"Error: Too many arguments\n";
+		return 0;
+	}
+	if (argc==2)
+	{
+		if (string(argv[1])!="grey" && string(argv[1])!="rgb")
+		{
+			cout<<"Error: Invalid Argument\n";
+			return 0;
+		}
+		if (string(argv[1]) == "rgb")
+			num_channel = 3;
+	}
 
-	int image[height][width];
+
+	uint8_t* rgb_image = stbi_load("colombia.jpg", &width, &height, &bpp, num_channel);
+
+	int image[height][width][num_channel];
 	int itr = 0;
 	for (int i = 0; i < height; ++i)
 		for (int j = 0; j < width; ++j)
-			image[i][j] = rgb_image[itr++];
+			for (int k = 0; k < num_channel; ++k)
+				image[i][j][k] = rgb_image[itr++];
 
 	stbi_image_free(rgb_image);	
 
 	int hist[256] = {0}; 
 	  
-	for (int i = 0; i < height; i++) 
-	    for (int j = 0; j < width; j++) 
-	        hist[image[i][j]] += 1;
+	for (int i = 0; i < height; ++i) 
+	    for (int j = 0; j < width; ++j)
+	    	for (int k = 0; k < num_channel; ++k) 
+	        	hist[image[i][j][k]] += 1;
+
+	int nodes = 0; 
+	for (int i = 0; i < 256; i++)  
+	    if (hist[i] != 0) 
+	        nodes += 1; 
+
+	out << nodes << "\n";
 
 	int totpix = height*width;
 
@@ -80,8 +109,6 @@ int main()
 	
 	for (int i = 0; i < 256; ++i)
 		freq[i] = ((float)hist[i])/totpix;
-
-
 
 	priority_queue<pixel*, vector<pixel*>, compare> pq;
 
@@ -116,27 +143,36 @@ int main()
 	{
 		for (int j = 0; j < width; ++j)
 		{
-			if(f == 0){
-				compression_size += codes[image[i][j]].code.size();
-			}
-			else if(codes[image[i][j]].parent == codes[last].parent){
-				compression_size += 1;
-				string code = codes[image[i][j]].code;
-				compression_size += code.substr(3, code.length()).size();
-			}
-			else{
-				compression_size += 1;
-				compression_size += codes[image[i][j]].code.size();
-			}
-			if(codes[image[i][j]].parent == -1)
-				f = 0;
-			else{
-				last = image[i][j];
-				f = 1;
+			for (int k = 0; k < num_channel; ++k)
+			{
+				if(f == 0){
+					compression_size += codes[image[i][j][k]].code.size();
+					out << codes[image[i][j][k]].code;
+				}
+				else if(codes[image[i][j][k]].parent == codes[last].parent){
+					compression_size += 1;
+					out << "1";
+					string code = codes[image[i][j][k]].code;
+					out << code.substr(3, code.length());
+					compression_size += code.substr(3, code.length()).size();
+				}
+				else{
+					compression_size += 1;
+					out << "0";
+					compression_size += codes[image[i][j][k]].code.size();
+					out << codes[image[i][j][k]].code;
+				}
+				if(codes[image[i][j][k]].parent == -1)
+					f = 0;
+				else{
+					last = image[i][j][k];
+					f = 1;
+				}
 			}
 		}
 	}
-
+	out << "\n";
+	out << height << " " << width << " " << num_channel << "\n";
 	cout << compression_size << " " << 256*256*8 << endl;
 
 
