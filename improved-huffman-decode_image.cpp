@@ -99,6 +99,7 @@ int main(){
 			}
 			else{
 				ptr = tmp;
+				level = 3;
 			}
 			f = 0;
 			continue;
