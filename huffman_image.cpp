@@ -31,8 +31,8 @@ ofstream out("huffman_encoded.txt");
 void preoder(pixel* root, string s){
 	
 	if(root->label != -1){
-		cout << setfill(' ') << setw(3) << root->label 
-			<< " -> " << setw(15) << s << setw(20) << fixed << setprecision(8) << root->freq << endl;  
+		// cout << setfill(' ') << setw(3) << root->label 
+		// 	<< " -> " << setw(15) << s << setw(20) << fixed << setprecision(8) << root->freq << endl;  
 		out << root->label << " -> " << s << "\n";
 		code[root->label] = s; 
 		return;
@@ -48,6 +48,7 @@ void preoder(pixel* root, string s){
 int main(int argc, char** argv)
 {
 	int width, height, bpp, num_channel = 1;
+
 
 	if (argc>2)
 	{
@@ -65,7 +66,9 @@ int main(int argc, char** argv)
 			num_channel = 3;
 	}
 
-	uint8_t* rgb_image = stbi_load("colombia.jpg", &width, &height, &bpp, num_channel);
+	auto start = chrono::high_resolution_clock::now();
+
+	uint8_t* rgb_image = stbi_load("7.bmp", &width, &height, &bpp, num_channel);
 
 	int image[height][width][num_channel];
 	int itr = 0;
@@ -134,9 +137,17 @@ int main(int argc, char** argv)
 			}
 		}
 	}
+	cout<<compression_size<<"\n";
 	out << "\n";
 	out << height << " " << width << " " << num_channel << "\n";
-	cout << compression_size << " " << 256*256*8*num_channel << endl;
+	
+	auto stop = chrono::high_resolution_clock::now(); 
+	auto duration = chrono::duration_cast<chrono::microseconds>(stop - start); 
+
+	float NoBpp = ((float)compression_size)/(height*width*num_channel);
+	float cp = (1 - ((float)compression_size)/(height*width*num_channel*8))*100;
+	cout<<height<<"x"<<width<<"x"<<num_channel<<", "<<cp<<", ";
+	cout<<NoBpp<<", "<<(duration.count()/1000000.0)<<", ";
 
 
 	return 0;

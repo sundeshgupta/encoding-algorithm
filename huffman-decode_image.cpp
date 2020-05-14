@@ -22,7 +22,7 @@ pixel* add(pixel* root, int i, string s, string label){
 	}
 
 	if(i == s.length()){
-		cout << s << " " << label << endl; 
+		// cout << s << " " << label << endl; 
 		root->label = stoi(label);
 		return root;
 	}
@@ -56,6 +56,8 @@ void preoder(pixel* root, string s){
 
 int main()
 {
+	auto start = chrono::high_resolution_clock::now(); 
+
 	ifstream in("huffman_encoded.txt");
 	int n;
 	in>>n;
@@ -67,7 +69,7 @@ int main()
 	}
 
 	// for checking
-	preoder(root, "");
+	// preoder(root, "");
 
 	string w;
 	in >> w;
@@ -94,7 +96,14 @@ int main()
 		}
 	}
 
-	stbi_write_png("image.png", width, height, num_channel, rgb_image, width*num_channel);
+	stbi_write_png("image.bmp", width, height, num_channel, rgb_image, width*num_channel);
+
+	auto stop = chrono::high_resolution_clock::now(); 
+
+	auto duration = chrono::duration_cast<chrono::microseconds>(stop - start);  
+
+	cout<<(duration.count()/1000000.0)<<", ";
+
 
 	return 0;
 }

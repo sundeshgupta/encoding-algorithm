@@ -38,8 +38,8 @@ void preoder(pixel* root, string s, int level, int parent){
 	if(root->label < 256){
 		codes[root->label].parent = parent;
 		codes[root->label].code = s;
-		cout << setfill(' ') << setw(3) << root->label 
-			<< " -> " << setw(20) << s << setw(4) << codes[root->label].parent << setw(20)<< fixed << setprecision(10) << root->freq << endl; 
+		// cout << setfill(' ') << setw(3) << root->label 
+			// << " -> " << setw(20) << s << setw(4) << codes[root->label].parent << setw(20)<< fixed << setprecision(10) << root->freq << endl; 
 
 		out << root->label << " -> " << s << "\n";
 
@@ -77,8 +77,9 @@ int main(int argc, char** argv)
 			num_channel = 3;
 	}
 
+	auto start = chrono::high_resolution_clock::now(); 
 
-	uint8_t* rgb_image = stbi_load("colombia.jpg", &width, &height, &bpp, num_channel);
+	uint8_t* rgb_image = stbi_load("7.bmp", &width, &height, &bpp, num_channel);
 
 	int image[height][width][num_channel];
 	int itr = 0;
@@ -173,7 +174,16 @@ int main(int argc, char** argv)
 	}
 	out << "\n";
 	out << height << " " << width << " " << num_channel << "\n";
-	cout << compression_size << " " << 256*256*8 << endl;
+	// cout << compression_size << " " << 256*256*8 << endl;
+
+	auto stop = chrono::high_resolution_clock::now(); 
+	auto duration = chrono::duration_cast<chrono::microseconds>(stop - start); 
+
+	float NoBpp = ((float)compression_size)/(height*width*num_channel);
+	float cp = (1 - ((float)compression_size)/(height*width*num_channel*8))*100;
+	cout<<cp<<", ";
+	cout<<NoBpp<<", "<<(duration.count()/1000000.0)<<", ";
+
 
 
 	return 0;
