@@ -5,7 +5,7 @@ using namespace std;
 #define ll long long
 
 const ll MIN = 0;
-const ll MAX = 65535;
+const ll MAX = 4294967295;
 
 ll lower[257];
 vector <ll> _low, _high;
@@ -22,7 +22,7 @@ string write_bits(bool bit, int bit_to_fall){
 
 int to_int(int _pos, string &encode){
 	int n = 0;
-	for (int i = _pos; i < sizeof(short) * 8 + _pos; i++)
+	for (int i = _pos; i < 32 + _pos; i++)
 	{
 		n <<= 1;
 		n |= encode[i] - '0';
@@ -31,7 +31,7 @@ int to_int(int _pos, string &encode){
 }
 
 ll add_bit(ll value, int count_taken, bool &flag, string &encode){
-	bitset<16> a(value);
+	bitset<32> a(value);
 
 	if(flag == 1){
 		a.reset(0);
@@ -81,14 +81,14 @@ int main()
     
     int itr = 0;
 
-    _low.resize(len);
-    _high.resize(len);
+    _low.resize(len+1);
+    _high.resize(len+1);
 
 	_low[0] = MIN;
 	_high[0] = MAX;
 
 	ll value = to_int(0, code);
-	int count_taken = 16;
+	int count_taken = 32;
 	bool flag = 0;
 	for(int i=1;i<len;i++){
 		ll range = (_high[i-1] - _low[i-1] + 1);

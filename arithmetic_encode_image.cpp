@@ -5,7 +5,7 @@ using namespace std;
 #include "stb_image.h"
 
 const ll MIN = 0;
-const ll MAX = 65535;
+const ll MAX = 4294967295;
 
 ll lower[257];
 vector <ll> low, high;
@@ -81,7 +81,7 @@ int main(int argc, char** argv)
 	// string filename;
 	// cin>>filename;
 
-	uint8_t* rgb_image = stbi_load("./images/2.bmp", &width, &height, &bpp, num_channel);
+	uint8_t* rgb_image = stbi_load("./images/9.png", &width, &height, &bpp, num_channel);
 
 	const ll ONE_QTR = MAX / 4 + 1;
 	const ll HALF = 2 * ONE_QTR;
@@ -91,8 +91,8 @@ int main(int argc, char** argv)
 	cout<<height<<" "<<width<<" "<<num_channel<<"\n";
 	cout<<len<<"\n";
 
-	low.resize(len);
-	high.resize(len);
+	low.resize(len+1);
+	high.resize(len+1);
 	
 	low[0] = MIN;
 	high[0] = MAX;
@@ -147,11 +147,12 @@ int main(int argc, char** argv)
 			low[i] = 2 * low[i];
 			high[i] = 2 * high[i] + 1;
 		}
+
 	}
 
 	ll p = low[i-1];
 
-	for(int j=15; j>=0; j--){
+	for(int j=31; j>=0; j--){
 		if((p & (1LL<<j)))	code += '1';
 		else code += '0';
 	}
@@ -167,4 +168,5 @@ int main(int argc, char** argv)
 	
 	out << height << " " << width << " " << num_channel << "\n";	
 
+	return 0;	
 }
