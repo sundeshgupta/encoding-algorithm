@@ -9,23 +9,6 @@ const ll MAX = 65535;
 
 int lower[257];
 
-#define err() cout<<"=================================="<<endl;
-#define errA(A) for(auto i:A)   cout<<i<<" ";cout<<endl;
-#define err1(a) cout<<#a<<" "<<a<<endl
-#define err2(a,b) cout<<#a<<" "<<a<<" "<<#b<<" "<<b<<endl
-#define err3(a,b,c) cout<<#a<<" "<<a<<" "<<#b<<" "<<b<<" "<<#c<<" "<<c<<endl
-#define err4(a,b,c,d) cout<<#a<<" "<<a<<" "<<#b<<" "<<b<<" "<<#c<<" "<<c<<" "<<#d<<" "<<d<<endl
-
-string write_bits(bool bit, int bit_to_fall){
-	string tmp;
-	tmp += to_string(bit);
-	while(bit_to_fall){
-		tmp += to_string(!bit);
-		bit_to_fall -= 1;
-	}
-	return tmp;
-}
-
 int to_int(int _pos, string &encode){
 	int n = 0;
 	for (int i = _pos; i < sizeof(short) * 8 + _pos; i++)

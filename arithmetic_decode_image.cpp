@@ -45,8 +45,8 @@ string write_bits(bool bit, int bit_to_fall){
 	return tmp;
 }
 
-int to_int(int _pos, string &encode){
-	int n = 0;
+ll to_int(int _pos, string &encode){
+	ll n = 0;
 	for (int i = _pos; i < 32 + _pos; i++)
 	{
 		n <<= 1;
@@ -72,7 +72,7 @@ ll add_bit(ll value, int count_taken, bool &flag, string &encode){
 		a.reset(0);
 	}
 
-	value = (ll)(a.to_ulong());
+	value = (ll)(a.to_ullong());
 	return value;
 }
 
@@ -150,7 +150,6 @@ int main()
 			_high[i] = 2 * _high[i] + 1;
 			value = add_bit(2 * value, count_taken, flag, code);
 			count_taken++;
-			cout<<("here");
 		}
 	}
 

@@ -9,13 +9,6 @@ const ll MAX = 65535;
 
 int lower[257];
 
-#define err() cout<<"=================================="<<endl;
-#define errA(A) for(auto i:A)   cout<<i<<" ";cout<<endl;
-#define err1(a) cout<<#a<<" "<<a<<endl
-#define err2(a,b) cout<<#a<<" "<<a<<" "<<#b<<" "<<b<<endl
-#define err3(a,b,c) cout<<#a<<" "<<a<<" "<<#b<<" "<<b<<" "<<#c<<" "<<c<<endl
-#define err4(a,b,c,d) cout<<#a<<" "<<a<<" "<<#b<<" "<<b<<" "<<#c<<" "<<c<<" "<<#d<<" "<<d<<endl
-
 string write_bits(bool bit, int bit_to_fall){
 	string tmp;
 	tmp += to_string(bit);
@@ -24,37 +17,6 @@ string write_bits(bool bit, int bit_to_fall){
 		bit_to_fall -= 1;
 	}
 	return tmp;
-}
-
-int to_int(int _pos, string &encode){
-	int n = 0;
-	for (int i = _pos; i < sizeof(short) * 8 + _pos; i++)
-	{
-		n <<= 1;
-		n |= encode[i] - '0';
-	}
-	return n;
-}
-
-ll add_bit(ll value, int count_taken, bool &flag, string &encode){
-	bitset<16> a(value);
-
-	if(flag == 1){
-		a.reset(0);
-	}
-	else if(count_taken > encode.length()){
-		a.set(0);
-		flag = 1;
-	}
-	else if(encode[count_taken] == '1'){
-		a.set(0);
-	}
-	else if(encode[count_taken] == '0'){
-		a.reset(0);
-	}
-
-	value = (ll)(a.to_ulong());
-	return value;
 }
 
 int main(){
