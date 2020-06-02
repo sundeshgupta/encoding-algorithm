@@ -65,12 +65,16 @@ int main(int argc, char** argv)
 		if (string(argv[1]) == "rgb")
 			num_channel = 3;
 	}
+	
+	string filename;
+	cin>>filename;
 
 	auto start = chrono::high_resolution_clock::now();
 
-	uint8_t* rgb_image = stbi_load("7.bmp", &width, &height, &bpp, num_channel);
+	uint8_t* rgb_image = stbi_load(filename.c_str(), &width, &height, &bpp, num_channel);
 
-	int image[height][width][num_channel];
+	uint8_t image[height][width][num_channel];
+
 	int itr = 0;
 	for (int i = 0; i < height; ++i)
 		for (int j = 0; j < width; ++j)
@@ -137,7 +141,7 @@ int main(int argc, char** argv)
 			}
 		}
 	}
-	cout<<compression_size<<"\n";
+	// cout<<compression_size<<"\n";
 	out << "\n";
 	out << height << " " << width << " " << num_channel << "\n";
 	

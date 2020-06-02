@@ -77,11 +77,14 @@ int main(int argc, char** argv)
 			num_channel = 3;
 	}
 
+	string filename;
+	cin>>filename;
+
 	auto start = chrono::high_resolution_clock::now(); 
 
-	uint8_t* rgb_image = stbi_load("7.bmp", &width, &height, &bpp, num_channel);
+	uint8_t* rgb_image = stbi_load(filename.c_str(), &width, &height, &bpp, num_channel);
 
-	int image[height][width][num_channel];
+	uint8_t image[height][width][num_channel];
 	int itr = 0;
 	for (int i = 0; i < height; ++i)
 		for (int j = 0; j < width; ++j)
@@ -140,11 +143,11 @@ int main(int argc, char** argv)
 	int compression_size = 0;
 	int last = -1;
 	bool f = 0;
-	for (int i = 0; i < height; ++i)
+	for (int k = 0; k < num_channel; ++k)
 	{
-		for (int j = 0; j < width; ++j)
+		for (int i = 0; i < height; ++i)
 		{
-			for (int k = 0; k < num_channel; ++k)
+			for (int j = 0; j < width; ++j)
 			{
 				if(f == 0){
 					compression_size += codes[image[i][j][k]].code.size();
@@ -181,7 +184,7 @@ int main(int argc, char** argv)
 
 	float NoBpp = ((float)compression_size)/(height*width*num_channel);
 	float cp = (1 - ((float)compression_size)/(height*width*num_channel*8))*100;
-	cout<<cp<<", ";
+	cout<<height<<"x"<<width<<"x"<<num_channel<<", "<<cp<<", ";
 	cout<<NoBpp<<", "<<(duration.count()/1000000.0)<<", ";
 
 

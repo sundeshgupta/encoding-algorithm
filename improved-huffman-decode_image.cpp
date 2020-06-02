@@ -130,8 +130,20 @@ int main(){
 			ptr = root;
 		}
 	}
+	uint8_t* rgb_image_restore;
+	rgb_image_restore = (uint8_t*) malloc(width*height*num_channel);
+	itr = 0;
+	for (int i = 0; i < height; ++i)
+	{
+		for (int j = 0; j < width; ++j)
+		{
+			rgb_image_restore[itr++] = rgb_image[i*width + j];
+			rgb_image_restore[itr++] = rgb_image[i*width + j + width*height];
+			rgb_image_restore[itr++] = rgb_image[i*width + j + 2*width*height];
+		}
+	}
 
-	stbi_write_png("improved_image.bmp", width, height, num_channel, rgb_image, width*num_channel);
+	stbi_write_png("improved_image.bmp", width, height, num_channel, rgb_image_restore, width*num_channel);
 
 	auto stop = chrono::high_resolution_clock::now(); 
 
