@@ -180,7 +180,7 @@ int main(int argc, char** argv)
 	cout<<NoBpp<<","<<(duration.count()/1000000.0)<<",";
 	cout<<getValue()<<",";
 
-
+	
 	return 0;
 }
 

@@ -169,7 +169,7 @@ int main(int argc, char** argv)
 	float cp = (1 - ((float)code.size())/(height*width*num_channel*8))*100;
 	cout<<height*width*num_channel<<","<<cp<<",";
 	cout<<NoBpp<<","<<(duration.count()/1000000.0)<<",";
-	cout<<getValue()<<"\n";
+	cout<<getValue()<<",";
 
 	return 0;	
 }
