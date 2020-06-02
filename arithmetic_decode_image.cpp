@@ -10,6 +10,31 @@ const ll MAX = 4294967295;
 ll lower[257];
 vector <ll> _low, _high;
 
+int parseLine(char* line){
+    // This assumes that a digit will be found and the line ends in " Kb".
+    int i = strlen(line);
+    const char* p = line;
+    while (*p <'0' || *p > '9') p++;
+    line[i-3] = '\0';
+    i = atoi(p);
+    return i;
+}
+
+int getValue(){ //Note: this value is in KB!
+    FILE* file = fopen("/proc/self/status", "r");
+    int result = -1;
+    char line[128];
+
+    while (fgets(line, 128, file) != NULL){
+        if (strncmp(line, "VmRSS:", 6) == 0){
+            result = parseLine(line);
+            break;
+        }
+    }
+    fclose(file);
+    return result;
+}
+
 string write_bits(bool bit, int bit_to_fall){
 	string tmp;
 	tmp += to_string(bit);
@@ -70,12 +95,10 @@ int main()
 
 
 	in >> code;
-	cout<<code.size()<<"\n";
+
 	int height, width, num_channel;
 
 	in>>height>>width>>num_channel;
-
-	cout<<height<<" "<<width<<" "<<num_channel<<"\n";
 
     rgb_image = (uint8_t*) malloc(width*height*num_channel);
     
@@ -127,9 +150,15 @@ int main()
 			_high[i] = 2 * _high[i] + 1;
 			value = add_bit(2 * value, count_taken, flag, code);
 			count_taken++;
+			cout<<("here");
 		}
 	}
 
 	stbi_write_png("ac_image.png", width, height, num_channel, rgb_image, width*num_channel);
 
+	auto stop = chrono::high_resolution_clock::now(); 
+
+	auto duration = chrono::duration_cast<chrono::microseconds>(stop - start);  
+
+	cout<<(duration.count()/1000000.0)<<","<<getValue()<<"\n";
 }

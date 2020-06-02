@@ -5,6 +5,32 @@ using namespace std;
 #define STB_IMAGE_WRITE_IMPLEMENTATION
 #include "stb_image_write.h"
 
+int parseLine(char* line){
+    // This assumes that a digit will be found and the line ends in " Kb".
+    int i = strlen(line);
+    const char* p = line;
+    while (*p <'0' || *p > '9') p++;
+    line[i-3] = '\0';
+    i = atoi(p);
+    return i;
+}
+
+int getValue(){ //Note: this value is in KB!
+    FILE* file = fopen("/proc/self/status", "r");
+    int result = -1;
+    char line[128];
+
+    while (fgets(line, 128, file) != NULL){
+        if (strncmp(line, "VmRSS:", 6) == 0){
+            result = parseLine(line);
+            break;
+        }
+    }
+    fclose(file);
+    return result;
+}
+
+
 struct pixel{
 	int label;
 	pixel* left, *right;
@@ -138,8 +164,14 @@ int main(){
 		for (int j = 0; j < width; ++j)
 		{
 			rgb_image_restore[itr++] = rgb_image[i*width + j];
-			rgb_image_restore[itr++] = rgb_image[i*width + j + width*height];
-			rgb_image_restore[itr++] = rgb_image[i*width + j + 2*width*height];
+			if (num_channel == 2 || num_channel == 3)
+			{
+				rgb_image_restore[itr++] = rgb_image[i*width + j + width*height];
+			}
+			if (num_channel == 3)
+			{
+				rgb_image_restore[itr++] = rgb_image[i*width + j + 2*width*height];
+			}
 		}
 	}
 
@@ -149,7 +181,7 @@ int main(){
 
 	auto duration = chrono::duration_cast<chrono::microseconds>(stop - start);  
 
-	cout<<(duration.count()/1000000.0)<<"\n";
+	cout<<(duration.count()/1000000.0)<<","<<getValue()<<"\n";
 
 
 	return 0;
