@@ -10,16 +10,6 @@ const ll MAX = 4294967295;
 ll lower[257];
 vector <ll> _low, _high;
 
-string write_bits(bool bit, int bit_to_fall){
-	string tmp;
-	tmp += to_string(bit);
-	while(bit_to_fall){
-		tmp += to_string(!bit);
-		bit_to_fall -= 1;
-	}
-	return tmp;
-}
-
 int to_int(int _pos, string &encode){
 	int n = 0;
 	for (int i = _pos; i < 32 + _pos; i++)
