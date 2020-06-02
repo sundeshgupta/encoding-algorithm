@@ -10,6 +10,31 @@ const ll MAX = 4294967295;
 ll lower[257];
 vector <ll> low, high;
 
+int parseLine(char* line){
+    // This assumes that a digit will be found and the line ends in " Kb".
+    int i = strlen(line);
+    const char* p = line;
+    while (*p <'0' || *p > '9') p++;
+    line[i-3] = '\0';
+    i = atoi(p);
+    return i;
+}
+
+int getValue(){ //Note: this value is in KB!
+    FILE* file = fopen("/proc/self/status", "r");
+    int result = -1;
+    char line[128];
+
+    while (fgets(line, 128, file) != NULL){
+        if (strncmp(line, "VmRSS:", 6) == 0){
+            result = parseLine(line);
+            break;
+        }
+    }
+    fclose(file);
+    return result;
+}
+
 string write_bits(bool bit, int bit_to_fall){
 	string tmp;
 	tmp += to_string(bit);
@@ -24,6 +49,7 @@ ofstream out("arithmetic_encoded.txt");
 
 string image_pixels = "";
 string code = "";
+uint8_t* rgb_image;
 
 int main(int argc, char** argv)
 {
@@ -47,18 +73,18 @@ int main(int argc, char** argv)
 			num_channel = 3;
 	}
 	
-	// string filename;
-	// cin>>filename;
+	string filename;
+	cin>>filename;
 
-	uint8_t* rgb_image = stbi_load("./images/9.png", &width, &height, &bpp, num_channel);
+	auto start = chrono::high_resolution_clock::now();
+
+	rgb_image = stbi_load(filename.c_str(), &width, &height, &bpp, num_channel);
 
 	const ll ONE_QTR = MAX / 4 + 1;
 	const ll HALF = 2 * ONE_QTR;
 	const ll THREE_QTR = 3 * ONE_QTR;
 
 	int len = height*width*num_channel + 1;
-	cout<<height<<" "<<width<<" "<<num_channel<<"\n";
-	cout<<len<<"\n";
 
 	low.resize(len+1);
 	high.resize(len+1);
@@ -132,10 +158,18 @@ int main(int argc, char** argv)
 		out << lower[i] << " ";
 
 	out << code << "\n";
-
-	cout<<code.size()<<"\n";
 	
 	out << height << " " << width << " " << num_channel << "\n";	
+
+	auto stop = chrono::high_resolution_clock::now(); 
+	auto duration = chrono::duration_cast<chrono::microseconds>(stop - start); 
+
+	cout<<filename<<",";
+	float NoBpp = ((float)code.size())/(height*width*num_channel);
+	float cp = (1 - ((float)code.size())/(height*width*num_channel*8))*100;
+	cout<<height*width*num_channel<<","<<cp<<",";
+	cout<<NoBpp<<","<<(duration.count()/1000000.0)<<",";
+	cout<<getValue()<<",";
 
 	return 0;	
 }

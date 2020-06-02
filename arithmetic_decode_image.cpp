@@ -10,8 +10,36 @@ const ll MAX = 4294967295;
 ll lower[257];
 vector <ll> _low, _high;
 
-int to_int(int _pos, string &encode){
-	int n = 0;
+// <<<<<<< HEAD
+// =======
+int parseLine(char* line){
+    // This assumes that a digit will be found and the line ends in " Kb".
+    int i = strlen(line);
+    const char* p = line;
+    while (*p <'0' || *p > '9') p++;
+    line[i-3] = '\0';
+    i = atoi(p);
+    return i;
+}
+
+int getValue(){ //Note: this value is in KB!
+    FILE* file = fopen("/proc/self/status", "r");
+    int result = -1;
+    char line[128];
+
+    while (fgets(line, 128, file) != NULL){
+        if (strncmp(line, "VmRSS:", 6) == 0){
+            result = parseLine(line);
+            break;
+        }
+    }
+    fclose(file);
+    return result;
+}
+
+// >>>>>>> e99a75e16414337047bd8dbd39bc133504179d4b
+ll to_int(int _pos, string &encode){
+	ll n = 0;
 	for (int i = _pos; i < 32 + _pos; i++)
 	{
 		n <<= 1;
@@ -37,7 +65,7 @@ ll add_bit(ll value, int count_taken, bool &flag, string &encode){
 		a.reset(0);
 	}
 
-	value = (ll)(a.to_ulong());
+	value = (ll)(a.to_ullong());
 	return value;
 }
 
@@ -60,12 +88,10 @@ int main()
 
 
 	in >> code;
-	cout<<code.size()<<"\n";
+
 	int height, width, num_channel;
 
 	in>>height>>width>>num_channel;
-
-	cout<<height<<" "<<width<<" "<<num_channel<<"\n";
 
     rgb_image = (uint8_t*) malloc(width*height*num_channel);
     
@@ -95,6 +121,8 @@ int main()
 
 		rgb_image[itr++] = symbol;
 
+		cout << "here: " << value <<  " [" << _low[i] << ", " << _high[i] << ")" << endl;
+
 		for(;;){
 			if(_high[i] >= HALF){
 				if(_low[i] >= HALF){
@@ -122,4 +150,9 @@ int main()
 
 	stbi_write_png("ac_image.png", width, height, num_channel, rgb_image, width*num_channel);
 
+	auto stop = chrono::high_resolution_clock::now(); 
+
+	auto duration = chrono::duration_cast<chrono::microseconds>(stop - start);  
+
+	cout<<(duration.count()/1000000.0)<<","<<getValue()<<"\n";
 }

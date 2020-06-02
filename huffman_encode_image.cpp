@@ -3,6 +3,31 @@ using namespace std;
 #define STB_IMAGE_IMPLEMENTATION
 #include "stb_image.h"
 
+int parseLine(char* line){
+    // This assumes that a digit will be found and the line ends in " Kb".
+    int i = strlen(line);
+    const char* p = line;
+    while (*p <'0' || *p > '9') p++;
+    line[i-3] = '\0';
+    i = atoi(p);
+    return i;
+}
+
+int getValue(){ //Note: this value is in KB!
+    FILE* file = fopen("/proc/self/status", "r");
+    int result = -1;
+    char line[128];
+
+    while (fgets(line, 128, file) != NULL){
+        if (strncmp(line, "VmRSS:", 6) == 0){
+            result = parseLine(line);
+            break;
+        }
+    }
+    fclose(file);
+    return result;
+}
+
 struct pixel{
 	float freq;
 	int label;
@@ -148,10 +173,12 @@ int main(int argc, char** argv)
 	auto stop = chrono::high_resolution_clock::now(); 
 	auto duration = chrono::duration_cast<chrono::microseconds>(stop - start); 
 
+	cout<<filename<<",";
 	float NoBpp = ((float)compression_size)/(height*width*num_channel);
 	float cp = (1 - ((float)compression_size)/(height*width*num_channel*8))*100;
-	cout<<height<<"x"<<width<<"x"<<num_channel<<", "<<cp<<", ";
-	cout<<NoBpp<<", "<<(duration.count()/1000000.0)<<", ";
+	cout<<height*width*num_channel<<","<<cp<<",";
+	cout<<NoBpp<<","<<(duration.count()/1000000.0)<<",";
+	cout<<getValue()<<",";
 
 
 	return 0;
