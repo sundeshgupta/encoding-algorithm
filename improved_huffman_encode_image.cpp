@@ -80,7 +80,7 @@ void preoder(pixel* root, string s, int level, int parent){
 	return;
 }
 
-
+string code_str = "";
 
 int main(int argc, char** argv)
 {
@@ -177,19 +177,24 @@ int main(int argc, char** argv)
 				if(f == 0){
 					compression_size += codes[image[i][j][k]].code.size();
 					out << codes[image[i][j][k]].code;
+					code_str += codes[image[i][j][k]].code;
 				}
 				else if(codes[image[i][j][k]].parent == codes[last].parent){
 					compression_size += 1;
 					out << "1";
+					code_str += "1";
 					string code = codes[image[i][j][k]].code;
 					out << code.substr(3, code.length());
+					code_str += code.substr(3, code.length());
 					compression_size += code.substr(3, code.length()).size();
 				}
 				else{
 					compression_size += 1;
 					out << "0";
+					code_str += "0";
 					compression_size += codes[image[i][j][k]].code.size();
 					out << codes[image[i][j][k]].code;
+					code_str += codes[image[i][j][k]].code;
 				}
 				if(codes[image[i][j][k]].parent == -1)
 					f = 0;

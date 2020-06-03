@@ -69,6 +69,7 @@ void preoder(pixel* root, string s){
 	return;
 }
 
+string code_str = "";
 
 int main(int argc, char** argv)
 {
@@ -106,7 +107,6 @@ int main(int argc, char** argv)
 			for(int k = 0; k < num_channel; ++k)
 				image[i][j][k] = rgb_image[itr++];
 
-	stbi_image_free(rgb_image);	
 
 	int hist[256] = {0}; 
 	  
@@ -163,6 +163,7 @@ int main(int argc, char** argv)
 			{
 				compression_size += code[image[i][j][k]].size();
 				out << code[image[i][j][k]];
+				code_str+=code[image[i][j][k]];
 			}
 		}
 	}
